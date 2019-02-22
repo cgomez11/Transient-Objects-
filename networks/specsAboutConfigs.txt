@@ -1,0 +1,64 @@
+Specifications about the possible data configurations
+FOLDER to configs: /home/cgomez11/Astronomy/configurations
+partitions['train']: list of training instances for the dataloader
+partitions['validation'] = list of validation instances for the dataloader
+labels[X]: where X is each element within partitions['train'] and partitions['validation'], and the value is the class encoded from 0 to # classes-1
+
+Only transients
+* Original partition to train and evaluate the models for 5-transients classification problem. Classes are unbalanced and there is no augmentation
+- partitions_base_noAug_5.npy
+- labels_base_noAug_5.npy
+
+* The original partition, but balanced (by replication) to the number of instances of the most represented class (SN=916 training instances). Used for RNNs.
+- partitions_base_balanced_5.npy
+- labels_base_balanced_5.npy
+
+* Based on the original partition, balance (use more than one observation at each date) and augment data (Rotate the images, UD, LR reflexions). Each class has ~ 24k instances. The "3 hannels" correspond to the dates of the beginning, maximum brightness and ending of a season. The corresponding data is in the folfer: Dataset_3channels_npy_original_MORE
+- partitions_3channels_original_5.npy
+- labels_3channels_original_5.npy
+
+* The same as previous *, but Each class has ~ 45k instances. Data in folder Dataset_3channels_npy_original_40k.
+- partitions_3channel_npy_original_40k.npy
+- labels_3channel_npy_original_40k.npy
+
+* The same as last **, but each class ~60k instances. Data in folder Dataset_3channels_npy_original_50k.
+- partitions_3channel_npy_original_50k.npy
+- labels_3channel_npy_original_50k.npy
+
+
+With non-transient class (nT)
+The number of nT instances to train models can change: 2800 (half), 5600 (complete) and 9168 (final)
+
+* Transient instances copied from (partitions_base_noAug_5), and nT instances included. CompleteTrain means that 5600 nT objects are in partitions['train'], and ALL the evaluation nT in partitions['validation']. Does not include final training instances. 
+- partitions_base_noAug_TnT_CompleteTrain.npy
+- labels_base_noAug_TnT_CompleteTrain.npy
+
+* Transient instances copied from (partitions_base_noAug_5), and nT instances included. FinalTrain means that 9168 nT objects are in partitions['train']. ALL the evaluation nT included. 
+- partitions_base_noAug_TnT_FinalTrain_CompleteEval.npy
+- labels_base_noAug_TnT_FinalTrain_CompleteEval.npy
+
+* The original partition for 6-class problem, but balanced (by replication) to the number of instances of the most represented class (nT=5600). 
+- partitions_base_balanced_completeTnT.npy
+- labels_base_balanced_completeTnT.npy
+
+
+* For transient classes, it is a copy from (partitions_3channels_original_5). Same strategy to balance and augment nT class: from the base_noAug, only take 2800 training instances (halfTrain), and 2824 for testing (halfEval).
+- partitions_3channels_original_TnT_halfTrain_halfEval.npy
+- labels_3channels_original_TnT_halfTrain_halfEval.npy
+
+* The same as previous *, but 5649 nT instances to evaluate (CompleteEval). partitions['validation'] has the COMPLETE evaluation set.
+- partitions_3channels_original_TnT_halfTrain_CompleteEval.npy
+- labels_3channels_original_TnT_halfTrain_CompleteEval.npy
+
+* For transient classes, it is a copy from (partitions_3channel_npy_original_40k). Same strategy to balance and augment nT class: from base_noAug, take 5600 training instances, and halfEval. Each class ~45k instances. 
+- partitions_3channels_original_TnT_CompleteTrain_halfEval.npy
+- labels_3channels_original_TnT_CompleteTrain_halfEval.npy
+
+* For transient classes, it is a copy from (partitions_3channel_npy_original_50k). Same strategy to balance and augment nT class: add new 3568 (from AddNegObjs) objects to train, and halfEval. 
+- partitions_3channels_original_TnT_9KCompleteTrain_halfEval.npy
+- labels_3channels_original_TnT_9KCompleteTrain_halfEval.npy
+
+NOTE: for the complete evaluation of any model, use partitions_3channels_original_TnT_halfTrain_CompleteEval, the complete set is in partitions['validation'].
+
+
+
