@@ -75,7 +75,7 @@ class DenseNet(nn.Module):
         self.trans3 = Transition(nChannels, nOutChannels)
 
         self.bn1 = nn.BatchNorm2d(nOutChannels)
-        self.fc = nn.Linear(nOutChannels, nClasses)
+        self.fc = nn.Linear(nOutChannels, nClasses) #self.fc = nn.Linear(3*nOutChannels, nClasses)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -99,6 +99,8 @@ class DenseNet(nn.Module):
 
     def forward(self, x):
         #print('original', x.shape)
+        #x: Bsx3x64x64
+        #for o reshape (view): 3Bsx1x64x64
         out = self.conv1(x)
         #print('out shape after conv1=', out.data.shape)
         out = self.trans1(self.dense1(out))
@@ -108,6 +110,8 @@ class DenseNet(nn.Module):
         out = self.trans3(self.dense3(out))
         #print('out shape after dense3=', out.shape)
         out = torch.squeeze(F.avg_pool2d(F.relu(self.bn1(out)), 8)) #8 is for 64
+        #3Bsx n_fts
+        #separar cada 3: Bsx3*n_fts
         #print('out before fc', out.shape)
         out_scores = self.fc(out)
         return out_scores
